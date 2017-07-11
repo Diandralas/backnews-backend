@@ -1,67 +1,46 @@
 var request = require('request');
-var xmlstream = require('xml-stream');
+var parseString = require('xml2js').parseString;
 var express = require('express');
+var expressMongoDb = require('express-mongo-db');
 
-var app = express()
+var app = express();
 
-// app.exports = require('./node_modules/xml-stream/lib/xml-stream.js');
-// compilador\backnews\node_modules\xml-stream\lib\xml-stream.js
+// importa controllers
+var CanadaController = require('./controllers/canada.js');
 
-app.get('/', function (req, res) {
-  request('http://pox.globo.com/rss/g1/', function (error, response, body){
-    var obj = xmlstream(body);
+// inicializa mongo e expoe para o express
+app.use(expressMongoDb('mongodb://localhost:27017/compilador'));
 
-    res.send(obj);
+// app.post('/canada', function (req, res) {
+//   request('http://pox.globo.com/rss/g1/', function (error, response, body){
+//     parseString(body, function (err, result) {
+//       // var str = '<p>' + result.rss.channel[0].item[1].title + '</p>';
+//       // str += '<a href="'+result.rss.channel[0].item[1].link[0]+'">Ir</a>';
+//       var str = '<p>' + result.rss.channel[0].item[1].title + '</p>';
+//       str += '<a href="'+result.rss.channel[0].item[1].link[0]+'">Ir</a>';
+//       res.send(str);
+//       req.db.collection('canada').save(req.body, function(err, result) {
+//         if (err) {
+//           return res.sendStatus(503);
+//         }
+//
+//        res.sendStatus(201);
+//       });
+//     });
+//   });
+// });
 
-    // xml.collect('subitem');
-    // xml.on('endElement: item', function(item) {
-    //   console.log(item);
-    // })
+//libera acesso à API de qualquer host/cliente
+// app.use(function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//   next();
+// });
 
-    // Request an RSS for a Twitter stream
-    var req = app.get({
-      host: 'http://pox.globo.com',
-      path: '/rss/g1/'
-    }).on('response', function(response) {
-      // Pass the response as UTF-8 to XmlStream
-      response.setEncoding('utf8');
-      var xml = new XmlStream(response);
+// cria endpoints para funcoes de controllers
+app.get('/canada', CanadaController.listar);
+app.post('/canada', CanadaController.criar);
 
-      // When each item node is completely parsed, buffer its contents
-      xml.on('updateElement: item', function(item) {
-        // Change <title> child to a new value, composed of its previous value
-        // and the value of <pubDate> child.
-        item.title = item.title.match(/^[^:]+/)[0] + ' on ' +
-        item.pubDate.replace(/ \+[0-9]{4}/, '');
-      });
-
-
-    });
-
-
-
-
-
-
-
-
-    //
-    // app.get('/', function (req, res) {
-    //   request('http://pox.globo.com/rss/g1/', function (error, response, body){
-    //     var reader = xmlstream.createReader(body, /^(Foo|Bar)$/, { gzip: true });
-    //
-    //     reader.on('record', function(record) {
-    //      res.send(record);
-    //     });
-    //   });
-    //
-    // });
-
-
-
-
-
-    app.listen(3000, function () {
-      console.log('Example app listening on port 3000!')
-    })
-});
+app.listen(3000, function () {
+  console.log('Example app listening on port 3000!')
+})

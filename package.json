@@ -4,13 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.15.3",
+    "express-mongo-db": "^2.0.3",
+    "mongodb": "^2.2.30",
     "request": "^2.81.0",
-    "xml-stream": "^0.4.5"
+    "xml2js": "^0.4.17"
   }
 }
