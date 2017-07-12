@@ -5,7 +5,7 @@ var parseString = require('xml2js').parseString;
 
 // listar
 exports.listar = function (req, res) {
-  req.db.collection('tnyt').find().toArray(function(err, result) {
+  req.db.collection('reuters').find().toArray(function(err, result) {
     if (err) {
       return console.log(err)
     };
@@ -15,14 +15,14 @@ exports.listar = function (req, res) {
 }
 
 exports.criar = function (req, res) {
-  request('http://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml', function (error, response, body){
+  request('http://feeds.washingtonpost.com/rss/politics', function (error, response, body){
 
 
     parseString(body, function (err, result) {
 
       var objetos = [];
-      for(var i in result.rss.item){
-        var itemAtual = result.rss.item[i];
+      for(var i in result.rss.channel[0].item){
+        var itemAtual = result.rss.channel[0].item[i];
 
         var objeto = {
           titulo: itemAtual.title[0],
@@ -35,7 +35,7 @@ exports.criar = function (req, res) {
 
       }
 
-      req.db.collection('tnyt').insertMany(objetos, function(err, result) {
+      req.db.collection('reuters').insertMany(objetos, function(err, result) {
         if (err) {
           return res.sendStatus(503);
         }
