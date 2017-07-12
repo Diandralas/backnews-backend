@@ -31,16 +31,16 @@ app.use(expressMongoDb('mongodb://localhost:27017/compilador'));
 // });
 
 //libera acesso à API de qualquer host/cliente
-// app.use(function(req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//   next();
-// });
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 // cria endpoints para funcoes de controllers
 app.get('/canada', CanadaController.listar);
 app.post('/canada', CanadaController.criar);
 
-app.listen(3000, function () {
+app.listen(3000, "0.0.0.0", function () {
   console.log('Example app listening on port 3000!')
 })
