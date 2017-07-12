@@ -5,6 +5,7 @@ var expressMongoDb = require('express-mongo-db');
 
 var app = express();
 
+
 // importa controllers
 var G1Controller = require('./controllers/g1.js');
 var FolhaController = require('./controllers/folha.js');
@@ -14,7 +15,7 @@ var ReutersController = require('./controllers/reuters.js');
 var ChicagoController = require('./controllers/chicago.js');
 var ElpaisController = require('./controllers/elpais.js');
 var ElmundoController = require('./controllers/elmundo.js');
-var BodeController = require('./controllers/bode.js');
+var LavanController = require('./controllers/lavan.js');
 
 // inicializa mongo e expoe para o express
 app.use(expressMongoDb('mongodb://localhost:27017/compilador'));
@@ -47,8 +48,8 @@ app.get('/espanha/elpais', ElpaisController.listar);
 app.post('/espanha/elpais', ElpaisController.criar);
 app.get('/espanha/elmundo', ElmundoController.listar);
 app.post('/espanha/elmundo', ElmundoController.criar);
-app.get('/espanha/boletin', BodeController.listar);
-app.post('/espanha/boletin', BodeController.criar);
+app.get('/espanha/lavanguardia', LavanController.listar);
+app.post('/espanha/lavanguardia', LavanController.criar);
 
 app.listen(3000, "0.0.0.0", function () {
   console.log('Example app listening on port 3000!')

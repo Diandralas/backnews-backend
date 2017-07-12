@@ -5,7 +5,7 @@ var parseString = require('xml2js').parseString;
 
 // listar
 exports.listar = function (req, res) {
-  req.db.collection('bode').find().toArray(function(err, result) {
+  req.db.collection('lavanguardia').find().toArray(function(err, result) {
     if (err) {
       return console.log(err)
     };
@@ -15,7 +15,7 @@ exports.listar = function (req, res) {
 }
 
 exports.criar = function (req, res) {
-  request('http://pox.globo.com/rss/g1/', function (error, response, body){
+  request('http://www.lavanguardia.com/mvc/feed/rss/home', function (error, response, body){
 
 
     parseString(body, function (err, result) {
@@ -35,7 +35,7 @@ exports.criar = function (req, res) {
 
       }
 
-      req.db.collection('bode').insertMany(objetos, function(err, result) {
+      req.db.collection('lavanguardia').insertMany(objetos, function(err, result) {
         if (err) {
           return res.sendStatus(503);
         }
