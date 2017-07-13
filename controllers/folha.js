@@ -20,28 +20,33 @@ exports.criar = function (req, res) {
 
     parseString(body, function (err, result) {
 
-      var objetos = [];
       for(var i in result.rss.channel[0].item){
         var itemAtual = result.rss.channel[0].item[i];
 
         var objeto = {
           titulo: itemAtual.title[0],
-          desc: itemAtual.description[0],
-          link: itemAtual.link[0]
+          desc: stripHtml(itemAtual.description[0]),
+          link: itemAtual.link[0],
+          _id: itemAtual.link[0],
+          dataCriacao: new Date()
         }
 
-        objetos.push(objeto);
+        req.db.collection('folha').save(objeto, function(err, result) {
+          if (err) {
+            return res.sendStatus(503);
+          }
+        });
         // res.send(result.rss.channel[0]);
 
       }
 
-      req.db.collection('folha').insertMany(objetos, function(err, result) {
-        if (err) {
-          return res.sendStatus(503);
-        }
 
-       res.sendStatus(201);
-      });
+
+      res.sendStatus(201);
     });
   });
 };
+
+function stripHtml(text) {
+  return text.replace(/<.*?>/g, '');
+}

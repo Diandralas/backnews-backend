@@ -15,7 +15,7 @@ exports.listar = function (req, res) {
 }
 
 exports.criar = function (req, res) {
-  request('http://pox.globo.com/rss/g1/', function (error, response, body){
+  request('http://pox.globo.com/rss/g1/', {encoding:'latin1'}, function (error, response, body){
 
 
     parseString(body, function (err, result) {
@@ -27,7 +27,8 @@ exports.criar = function (req, res) {
           titulo: itemAtual.title[0],
           desc: stripHtml(itemAtual.description[0]),
           link: itemAtual.link[0],
-          _id: itemAtual.link[0]
+          _id: itemAtual.link[0],
+          dataCriacao: new Date()
         }
 
         req.db.collection('g1').save(objeto, function(err, result) {

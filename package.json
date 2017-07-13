@@ -13,6 +13,7 @@
     "express": "^4.15.3",
     "express-mongo-db": "^2.0.3",
     "mongodb": "^2.2.30",
+    "node-cron": "^1.2.0",
     "request": "^2.81.0",
     "xml2js": "^0.4.17"
   }
