@@ -5,9 +5,6 @@ var expressMongoDb = require('express-mongo-db');
 
 var app = express();
 
-
-var serviceNews = require('./services/pullnews.js');
-
 // importa controllers
 var G1Controller = require('./controllers/g1.js');
 var FolhaController = require('./controllers/folha.js');

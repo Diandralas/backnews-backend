@@ -5,7 +5,7 @@ var parseString = require('xml2js').parseString;
 
 // listar
 exports.listar = function (req, res) {
-  req.db.collection('chicago').find().toArray(function(err, result) {
+  req.db.collection('california').find().toArray(function(err, result) {
     if (err) {
       return console.log(err)
     };
@@ -35,7 +35,7 @@ exports.criar = function (req, res) {
 
       }
 
-      req.db.collection('chicago').insertMany(objetos, function(err, result) {
+      req.db.collection('california').insertMany(objetos, function(err, result) {
         if (err) {
           return res.sendStatus(503);
         }
