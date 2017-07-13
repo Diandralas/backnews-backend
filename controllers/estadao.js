@@ -15,7 +15,7 @@ exports.listar = function (req, res) {
 }
 
 exports.criar = function (req, res) {
-  request('http://www.estadao.com.br/rss/ultimas.xml', {encoding:'latin1'}, function (error, response, body){
+  request('http://www.estadao.com.br/rss/ultimas.xml', function (error, response, body){
 
 
     parseString(body, function (err, result) {
