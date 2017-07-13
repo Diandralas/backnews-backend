@@ -15,7 +15,7 @@ exports.listar = function (req, res) {
 }
 
 exports.criar = function (req, res) {
-  request('http://pox.globo.com/rss/g1/', {encoding:'latin1'}, function (error, response, body){
+  request('http://pox.globo.com/rss/g1/', function (error, response, body){
 
 
     parseString(body, function (err, result) {

@@ -10,38 +10,41 @@ exports.listar = function (req, res) {
       return console.log(err)
     };
 
-   res.send(result);
+    res.send(result);
   });
 }
 
 exports.criar = function (req, res) {
-  request('http://www.dailynews.com/section?template=RSS&profile=4000036&mime=xml', function (error, response, body){
+  var ObjectID = require('mongodb').ObjectID;
+  request('http://www.dailynews.com/section?template=RSS&profile=4000036&mime=xml', {encoding:'latin1'}, function (error, response, body){
 
 
     parseString(body, function (err, result) {
-
-      var objetos = [];
       for(var i in result.rss.channel[0].item){
         var itemAtual = result.rss.channel[0].item[i];
 
         var objeto = {
           titulo: itemAtual.title[0],
-          desc: itemAtual.description[0],
-          link: itemAtual.link[0]
+          desc: stripHtml(itemAtual.description[0]),
+          link: itemAtual.link[0],
+          _id: itemAtual.link[0],
+          dataCriacao: new Date()
         }
 
-        objetos.push(objeto);
+        req.db.collection('california').save(objeto, function(err, result) {
+          if (err) {
+            return res.sendStatus(503);
+          }
+        });
         // res.send(result.rss.channel[0]);
-
       }
 
-      req.db.collection('california').insertMany(objetos, function(err, result) {
-        if (err) {
-          return res.sendStatus(503);
-        }
-
-       res.sendStatus(201);
-      });
+      res.sendStatus(201);
     });
   });
 };
+
+//Tirar tudo que for string e estiver entre <>
+function stripHtml(text) {
+  return text.replace(/<.*?>/g, '');
+}
