@@ -10,7 +10,7 @@ var app = express();
 app.use(bodyParser.json());
 
 var MasterController = require('./controllers/g1.js');
-
+var NoticiaController = require('./controllers/server.js');
 var FavoritoController = require('./controllers/favoritos.js');
 
 // inicializa mongo e expoe para o express
@@ -28,7 +28,7 @@ app.use(function(req, res, next) {
 app.get('/paises', MasterController.listarPaises);
 app.get('/paises/jornais', MasterController.listarJornais);
 app.get('/paises/jornais/noticias', MasterController.listarNoticias);
-
+app.get('/paises/jornais/noticias', NoticiaController.pushNoticias);
 // app.get('/brasil/g1', G1Controller.listar);
 // app.post('/brasil/g1', G1Controller.criar);
 // app.get('/brasil/folha', FolhaController.listar);
