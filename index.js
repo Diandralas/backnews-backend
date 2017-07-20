@@ -26,7 +26,8 @@ app.use(function(req, res, next) {
 // endpoints para funcoes de controllers
 
 app.get('/paises', MasterController.listarPaises);
-app.get('/paises/:jornais', MasterController.listarJornais);
+app.get('/paises/jornais', MasterController.listarJornais);
+app.get('/paises/jornais/noticias', MasterController.listarNoticias);
 
 // app.get('/brasil/g1', G1Controller.listar);
 // app.post('/brasil/g1', G1Controller.criar);
