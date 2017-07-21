@@ -9,9 +9,9 @@ var app = express();
 // inicializa o body parser
 app.use(bodyParser.json());
 
-var MasterController = require('./controllers/g1.js');
-var NoticiaController = require('./controllers/server.js');
+var MasterController = require('./controllers/Geral.js');
 var FavoritoController = require('./controllers/favoritos.js');
+var G1Controller = require('./controllers/g1.js');
 
 // inicializa mongo e expoe para o express
 app.use(expressMongoDb('mongodb://localhost:27017/compilador'));
@@ -23,12 +23,17 @@ app.use(function(req, res, next) {
   next();
 });
 
+require('./server/server.js');
+
+
 // endpoints para funcoes de controllers
 
 app.get('/paises', MasterController.listarPaises);
 app.get('/paises/jornais', MasterController.listarJornais);
 app.get('/paises/jornais/noticias', MasterController.listarNoticias);
-app.get('/paises/jornais/noticias', NoticiaController.pushNoticias);
+app.post('/brasil/g1/noticias', G1Controller.criarG1);
+
+
 // app.get('/brasil/g1', G1Controller.listar);
 // app.post('/brasil/g1', G1Controller.criar);
 // app.get('/brasil/folha', FolhaController.listar);
