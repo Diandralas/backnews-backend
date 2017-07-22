@@ -17,7 +17,7 @@ exports.criarG1 = function (req, res) {
   });
 
   for(var j in vetorPaises){
-    console.log(vetorPaises[j].nome);
+  
     for(var k in vetorPaises[j].jornais){
       console.log(vetorPaises[j].jornais[k].nome_jornal);
       console.log(vetorPaises[j].jornais[k].rssUrl);
