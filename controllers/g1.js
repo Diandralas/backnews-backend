@@ -4,24 +4,24 @@ var parseString = require('xml2js').parseString;
 
 // const url = 'http://pox.globo.com/rss/g1/'; 'http://www.estadao.com.br/rss/ultimas.xml';
 
-var vetorPaises = [];
+// var vetorPaises = [];
 
 exports.criarG1 = function (req, res) {
   req.db.collection("paises").find().toArray(function(err, result) {
     if (err) {
       return res.sendStatus(503);
     }
-
-    var vetorPaises = result;
-    // console.log(vetorPaises.data);
   });
 
+  // var vetorPaises = paises
+  console.log(vetorPaises);
+
   for(var j in vetorPaises){
-  
+
     for(var k in vetorPaises[j].jornais){
       console.log(vetorPaises[j].jornais[k].nome_jornal);
       console.log(vetorPaises[j].jornais[k].rssUrl);
-      request(vetorPaises[j].jornais[k].rssURL, function (error, response, body){
+      request(vetorPaises[j].jornais[k].nome_jornal.rssURL, function (error, response, body){
 
         parseString(body, function (err, result) {
 
