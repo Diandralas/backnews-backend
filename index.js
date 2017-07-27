@@ -27,12 +27,9 @@ require('./server/server.js');
 // endpoints para funcoes de controllers
 
 app.get('/paises', MasterController.listarPaises);
-app.get('/paises/:pais/jornais/:jornal', MasterController.listarPais);
-// app.get('/paises/:pais/jornais', MasterController.listarJornais);
-// app.get('/paises/:pais/jornais/:jornal', MasterController.listarJornal);
-// app.get('/paises/:pais/jornais/:jornal/noticias', MasterController.listarNoticias);
-
-
+app.get('/paises/:pais', MasterController.listarPais);
+app.get('/paises/:pais/jornais', MasterController.listarJornais);
+app.get('/paises/:pais/jornais/:jornal/noticias', MasterController.listarNoticias);
 
 // app.get('/brasil/g1', G1Controller.listar);
 // app.post('/brasil/g1', G1Controller.criar);

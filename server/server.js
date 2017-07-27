@@ -12,6 +12,34 @@ MongoClient.connect(url, function(err, database) {
   db = database;
 });
 
+function updateRss(pais, jornal, rssUrl) {
+  request(rssUrl, function(error, response, body) {
+    parseString(body, function(err, result) {
+      for (var i in result.rss.channel[0].item) {
+        var itemAtual = result.rss.channel[0].item[i];
+        var objeto = {
+          titulo: itemAtual.title,
+          desc: stripHtml(itemAtual.description),
+          link: getUrl(itemAtual.link),
+          _id: getUrl(itemAtual.link),
+          jornal: jornal,
+          pais: pais,
+          dataCriacao: new Date()
+        }
+      }
+
+      db.collection("noticias").save(objeto, function(err, result) {
+        if (err) {
+          console.log("Erro ao salvar: " + err);
+        } else {
+          console.log("Salvo com sucesso");
+        }
+      })
+    })
+  });
+
+}
+
 // roda a cada 1 minuto
 cron.schedule('* * * * *', function() {
   console.log("Rodando serviço de busca de RSS");
@@ -23,33 +51,12 @@ cron.schedule('* * * * *', function() {
 
       for (var j in vetorPaises) {
         for (var k in vetorPaises[j].jornais) {
-          request(vetorPaises[j].jornais[k].rssUrl, function(error, response, body) {
-            console.log("Encontrado pais: " + vetorPaises[j].nome);
-            console.log("Buscando jornal: " + vetorPaises[j].jornais[k].nome_jornal);
-            console.log("RSS encontrado");
-            parseString(body, function(err, result) {
-              for (var i in result.rss.channel[0].item) {
-                var itemAtual = result.rss.channel[0].item[i];
-                var objeto = {
-                  titulo: itemAtual.title,
-                  desc: stripHtml(itemAtual.description),
-                  link: getUrl(itemAtual.link),
-                  _id: getUrl(itemAtual.link),
-                  jornal: vetorPaises[j].jornais[k].nome_jornal,
-                  pais: vetorPaises[j].nome,
-                  dataCriacao: new Date()
-                }
-              }
+          console.log("Encontrado pais: " + vetorPaises[j].nome);
+          console.log("Buscando jornal: " + vetorPaises[j].jornais[k].nome_jornal);
+          console.log("RSS encontrado");
 
-              db.collection("noticias").save(objeto, function(err, result) {
-                if (err) {
-                  console.log("Erro ao salvar: " + err);
-                } else {
-                  console.log("Salvo com sucesso");
-                }
-              })
-            })
-          });
+          updateRss(vetorPaises[j].nome, vetorPaises[j].jornais[k].nome_jornal,
+            vetorPaises[j].jornais[k].rssUrl);
         }
       }
 
