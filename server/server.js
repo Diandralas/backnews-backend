@@ -38,6 +38,9 @@ function updateRss(pais, jornal, rssUrl) {
     })
   });
 
+  
+
+
 }
 
 // roda a cada 1 minuto

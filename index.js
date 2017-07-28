@@ -22,7 +22,7 @@ app.use(function(req, res, next) {
 });
 
 require('./server/server.js');
-
+var UsuarioController = require('./controllers/usuarios.js');
 
 // endpoints para funcoes de controllers
 
@@ -30,6 +30,10 @@ app.get('/paises', MasterController.listarPaises);
 app.get('/paises/:pais', MasterController.listarPais);
 app.get('/paises/:pais/jornais', MasterController.listarJornais);
 app.get('/paises/:pais/jornais/:jornal/noticias', MasterController.listarNoticias);
+
+app.get('/usuario', UsuarioController.listarusuarios);
+app.post('/usuario', UsuarioController.criarusuario);
+app.post('/login', UsuarioController.validarusuario);
 
 // app.get('/brasil/g1', G1Controller.listar);
 // app.post('/brasil/g1', G1Controller.criar);
