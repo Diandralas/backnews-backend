@@ -26,48 +26,44 @@ var task = cron.schedule('* * * * *', function() {
 
           var news = vetorPaises[pais].jornais[jornal].nome_jornal;
           var rss = vetorPaises[pais].jornais[jornal].rssUrl;
-          console.log("news" + news + "\n" + rss);
-          updateRss(pais, news, rss);
+          updateRss(nomePais, news, rss);
           }
         }
       }
     }, false);
-
   });
-
 task.start();
 
 function updateRss(pais, jornal, rssUrl) {
   request(rssUrl, function(error, response, body) {
-    console.log("Buscando noticias no RSS \n Response: " + response + "\n Body: " + body);
-
-    parseString(body, function(err, result) {
+      parseString(body, function(err, result) {
       if(err){
         console.log("Error:" + err);
       }
 
-      console.log("ParseString do body:" + result);
+      // if (!result || !result.rss) {
+      //   console.log("Formato nao suportado no jornal:" + jornal);
+      //   return;
+      // }
 
       for (var i in result.rss.channel[0].item) {
         var itemAtual = result.rss.channel[0].item[i];
-        console.log("Item: " + itemAtual);
 
+        console.log(itemAtual);
         var objeto = {
-          titulo: itemAtual.title,
+          titulo: itemAtual.title[0],
           desc: stripHtml(itemAtual.description),
           link: getUrl(itemAtual.link),
           jornal: jornal,
           pais: pais,
           dataCriacao: new Date()
         };
-        console.log("Objeto: " + objeto);
 
         db.collection("noticias").save(objeto, function(err, result) {
           if (err) {
             console.log("Erro ao salvar: " + err);
           } else {
-            console.log("Salvo com sucesso");
-          }
+                    }
         })
       }
 
