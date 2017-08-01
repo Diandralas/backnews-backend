@@ -1,25 +1,56 @@
 var MongoClient = require('mongodb').MongoClient;
-
 var cron = require('node-cron');
 var request = require('request');
 var parseString = require('xml2js').parseString;
 var FeedParser = require('feedparser');
-
 var db;
 var url = 'mongodb://localhost:27017/compilador';
 
 MongoClient.connect(url, function(err, database) {
-  if (err) return console.log(err);
+  if (err) return console.log("Error Mongo: " + err);
   db = database;
 });
 
+// roda a cada 2 minuto
+var task = cron.schedule('* * * * *', function() {
+  console.log("Rodando serviço de busca de RSS");
+  db.collection("paises").find().toArray(function(err, result) {
+    if (err) {
+      console.log("Erro ao buscar paises");
+    } else {
+      console.log("Não deu erro no find Paises");
+      var vetorPaises = result;
+      for (var pais in vetorPaises) {
+        var nomePais = vetorPaises[pais].nome;
+        for (var jornal in vetorPaises[pais].jornais) {
+
+          var news = vetorPaises[pais].jornais[jornal].nome_jornal;
+          var rss = vetorPaises[pais].jornais[jornal].rssUrl;
+          console.log("news" + news + "\n" + rss);
+          updateRss(pais, news, rss);
+          }
+        }
+      }
+    }, false);
+
+  });
+
+task.start();
+
 function updateRss(pais, jornal, rssUrl) {
   request(rssUrl, function(error, response, body) {
+    console.log("Buscando noticias no RSS \n Response: " + response + "\n Body: " + body);
 
     parseString(body, function(err, result) {
+      if(err){
+        console.log("Error:" + err);
+      }
+
+      console.log("ParseString do body:" + result);
+
       for (var i in result.rss.channel[0].item) {
         var itemAtual = result.rss.channel[0].item[i];
-        console.log(itemAtual);
+        console.log("Item: " + itemAtual);
 
         var objeto = {
           titulo: itemAtual.title,
@@ -29,6 +60,7 @@ function updateRss(pais, jornal, rssUrl) {
           pais: pais,
           dataCriacao: new Date()
         };
+        console.log("Objeto: " + objeto);
 
         db.collection("noticias").save(objeto, function(err, result) {
           if (err) {
@@ -78,34 +110,6 @@ function updateRss(pais, jornal, rssUrl) {
 
 
   }
-
-  // roda a cada 2 minuto
-var task = cron.schedule('0-1 * * * *', function() {
-    console.log("Rodando serviço de busca de RSS");
-    db.collection("paises").find().toArray(function(err, result) {
-      if (err) {
-        console.log("Erro ao buscar paises");
-      } else {
-        var vetorPaises = result;
-
-        for (var j in vetorPaises) {
-          for (var k in vetorPaises[j].jornais) {
-            console.log("Encontrado pais: " + vetorPaises[j].nome);
-            console.log("Buscando jornal: " + vetorPaises[j].jornais[k].nome_jornal);
-            console.log("RSS encontrado");
-
-            updateRss(vetorPaises[j].nome, vetorPaises[j].jornais[k].nome_jornal,
-              vetorPaises[j].jornais[k].rssUrl);
-            }
-          }
-
-        }
-      });
-
-    });
-
-  task.start();
-
 
     function stripHtml(text) {
       if (!text) {
