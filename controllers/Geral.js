@@ -59,7 +59,7 @@ exports.listarNoticias = function (req, res) {
   var nomePais = req.params.pais;
   var nomeJornal = req.params.jornal;
 
-  req.db.collection('noticias').find({pais: nomePais, jornal: nomeJornal}).toArray(function(err, result) {
+  req.db.collection('noticias').find({pais: nomePais, jornal: nomeJornal}, {}, {limit: 100}).toArray(function(err, result) {
     if (err) {
       return console.log(err);
     };

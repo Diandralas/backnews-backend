@@ -11,8 +11,8 @@ MongoClient.connect(url, function(err, database) {
   db = database;
 });
 
-// roda a cada 2 minuto
-var task = cron.schedule('* * * * *', function() {
+// roda a cada 5 minuto
+var task = cron.schedule('*/5 * * * *', function() {
   console.log("Rodando serviço de busca de RSS");
   db.collection("paises").find().toArray(function(err, result) {
     if (err) {
